@@ -1,0 +1,69 @@
+@page "/event-card/{eventId:int}"
+@using EventEaseApp.Services;
+@using EventEaseApp.Data.Models;
+@inject IEventService _eventService;
+
+<div class="container">
+    <h1>Event Details</h1>
+    <div class="detail"><span class="label">Name:</span> <span class="value">@SelectedEventObj.Name</span></div>
+    <div class="detail"><span class="label">Date:</span> <span class="value">@SelectedEventObj.Date</span></div>
+    <div class="detail"><span class="label">Location:</span> <span class="value">@SelectedEventObj.Location</span></div>
+    <div class="detail"><span class="label">Description:</span> <span class="value">@SelectedEventObj.Description</span></div>
+    <div class="detail"><span class="label">Ticket Price:</span> <span class="value">$@SelectedEventObj.TicketPrice</span></div>
+    <a href="/event-card-list" class="back-button">Back</a>
+</div>
+
+@code{
+    [Parameter]
+    public int eventId { get; set; }
+    public Event SelectedEventObj { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        SelectedEventObj = _eventService.GetById(eventId);
+    }
+}
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #ffffff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+
+    h1 {
+        font-size: 24px;
+        color: #333;
+    }
+
+    .detail {
+        margin-bottom: 15px;
+    }
+
+    .label {
+        font-weight: bold;
+    }
+
+    .value {
+        color: #555;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+</style>

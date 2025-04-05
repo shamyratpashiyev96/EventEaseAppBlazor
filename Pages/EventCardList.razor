@@ -1,0 +1,46 @@
+@namespace EventEaseApp.Components
+@using EventEaseApp.Data.Models;
+@using EventEaseApp.Services;
+@inject IEventService _eventService;
+@page "/event-card-list";
+
+<table class="events-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Date</th>
+      <th>Location</th>
+      <th>TicketPrice</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach(var item in EventList)
+    {
+      <tr>
+        <td>@item.Name</td>
+        <td><i class="fa fa-calendar"></i>@item.Date</td>
+        <td><i class="fa fa-map-marker"></i>@item.Location</td>
+        <td>$@item.TicketPrice</td>
+        <td><a href="/event-card/@item.Id" class="btn btn-primary">View Details</a></td>
+      </tr>
+    }
+    
+  </tbody>
+</table>
+
+@code {
+  [Parameter]
+  public List<Event> EventList { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    EventList = _eventService.GetList();
+  }
+}
+
+<style>
+  table{
+    width: 100%;
+  }
+</style> 
