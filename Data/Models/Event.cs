@@ -21,4 +21,6 @@ public class Event
 
     [Required]
     public decimal TicketPrice { get; set; }
+
+    public List<int> AttendeeIds { get; set; } = new();
 }

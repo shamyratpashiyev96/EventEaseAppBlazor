@@ -1,0 +1,147 @@
+@page "/registration"
+@using EventEaseApp.Data.Models;
+@using EventEaseApp.Services;
+@inject ICurrentUserService _currentUser;
+
+
+<div class="container">
+    <h1>Create Account</h1>
+    <EditForm Model="Model" OnValidSubmit="SubmitClicked" id="registration-form">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="fullname">Full Name</label>
+            <InputText id="fullname" @bind-Value="Model.FullName" placeholder="Enter your full name" />
+            <ValidationMessage For="() => Model.FullName" class="error-message" />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <InputText type="email" id="email" @bind-Value="Model.Email" placeholder="Enter your email address" />
+            <ValidationMessage class="error-message" For="() => Model.Email" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <InputText type="password" @bind-Value="Model.Password" id="password" placeholder="Create a password" />
+            <ValidationMessage For="() => Model.Password" class="error-message" />
+        </div>
+
+        <div class="form-group">
+            <label for="confirm-password">Confirm Password</label>
+            <InputText type="password" id="confirm-password" @bind-Value="Model.ConfirmPassword" placeholder="Confirm your password" />
+            <ValidationMessage For="() => Model.ConfirmPassword" class="error-message" />
+        </div>
+
+         <button type="submit" class="button">Register</button>
+
+        <div class="terms">
+            By registering, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        </div>
+    </EditForm>
+       
+</div>
+
+@code {
+    public RegisteredUser Model { get; set; } = new();
+
+    public void SubmitClicked()
+    {
+        _currentUser.SetCurrentUser(Model);
+    }
+}
+
+<style>
+    .container {
+        width: 100%;
+        max-width: 500px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-weight: 600;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        color: #555;
+        font-weight: 500;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+
+    input:focus {
+        border-color: #4361ee;
+        outline: none;
+    }
+
+    input::placeholder {
+        color: #aaa;
+    }
+
+    .error-message {
+        color: #d90429;
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+    }
+
+    .button {
+        background-color: #4361ee;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s;
+    }
+
+    .button:hover {
+        background-color: #3a56d4;
+    }
+
+    .terms {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .terms a {
+        color: #4361ee;
+        text-decoration: none;
+    }
+
+    .terms a:hover {
+        text-decoration: underline;
+    }
+
+    .invalid {
+        border-color: #d90429;
+    }
+
+    .invalid+.error-message {
+        display: block;
+    }
+</style>
