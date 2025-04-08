@@ -8,6 +8,7 @@ public interface IEventService
     Event GetById(int Id);
     void Add(Event eventObj);
     void AddAttendee(int eventId, int userId);
+    void RemoveAttendee(int eventId, int userId);
 }
 
 public class EventService : IEventService
@@ -220,5 +221,11 @@ public class EventService : IEventService
     {
         var selectedEvent = Events.Where(x => x.Id == eventId).FirstOrDefault();
         selectedEvent?.AttendeeIds.Add(userId);
+    }
+
+    public void RemoveAttendee(int eventId, int userId)
+    {
+        var selectedEvent = Events.Where(x => x.Id == eventId).FirstOrDefault();
+        selectedEvent?.AttendeeIds.Remove(userId);
     }
 }

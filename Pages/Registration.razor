@@ -2,6 +2,7 @@
 @using EventEaseApp.Data.Models;
 @using EventEaseApp.Services;
 @inject ICurrentUserService _currentUser;
+@inject NavigationManager _navigationManager;
 
 
 <div class="container">
@@ -48,6 +49,7 @@
     public void SubmitClicked()
     {
         _currentUser.SetCurrentUser(Model);
+        _navigationManager.NavigateTo("/event-card-list");
     }
 }
 

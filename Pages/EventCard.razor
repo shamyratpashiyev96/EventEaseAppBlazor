@@ -13,29 +13,53 @@
     <div class="detail"><span class="label">Description:</span> <span class="value">@SelectedEventObj.Description</span></div>
     <div class="detail"><span class="label">Ticket Price:</span> <span class="value">$@SelectedEventObj.TicketPrice</span></div>
     <a href="/event-card-list" class="back-button">Back</a>
-    <button class="back-button" @onclick="SignUpButtonClicked">Sign up to the event</button>
+    
+    @if(IsRegisteredForEvent) {
+        <button class="back-button" @onclick="UnsignButtonClicked">
+            Unsign from the event
+        </button>
+    } else {
+        <button class="back-button" @onclick="SignUpButtonClicked">
+            Sign up to the event
+        </button>
+    }
 </div>
 
 @code{
     [Parameter]
     public int eventId { get; set; }
     public Event SelectedEventObj { get; set; }
+    public bool IsRegisteredForEvent { get; set; } = false;
+    public RegisteredUser CurrentUser { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override Task OnParametersSetAsync()
     {
         SelectedEventObj = _eventService.GetById(eventId);
+        CurrentUser = _currentUserService.GetCurrentUser();
+        IsRegisteredForEvent = SelectedEventObj.AttendeeIds.Contains(CurrentUser?.Id ?? -1);
+
+        return Task.CompletedTask;
     }
 
     public void SignUpButtonClicked()
     {
-        var currentUser = _currentUserService.GetCurrentUser();
-        if (currentUser != null)
+        if (!IsRegisteredForEvent && CurrentUser != null)
         {
-            _eventService.AddAttendee(eventId, currentUser.Id);
+            _eventService.AddAttendee(eventId, CurrentUser.Id);
+            IsRegisteredForEvent = true;
         }
-        else
+        if (CurrentUser == null)
         {
             Navigation.NavigateTo("/registration");
+        }
+    }
+
+    public void UnsignButtonClicked()
+    {
+        if(IsRegisteredForEvent && CurrentUser != null)
+        {
+            _eventService.RemoveAttendee(eventId, CurrentUser.Id);
+            IsRegisteredForEvent = false;
         }
     }
 }
