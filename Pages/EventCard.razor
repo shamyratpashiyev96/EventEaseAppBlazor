@@ -3,6 +3,7 @@
 @using EventEaseApp.Data.Models;
 @inject IEventService _eventService;
 @inject ICurrentUserService _currentUserService;
+@inject IUserService _userService;
 @inject NavigationManager Navigation;
 
 <div class="container">
@@ -23,6 +24,16 @@
             Sign up to the event
         </button>
     }
+
+    <br/>
+    <br/>
+    <p class="label">Attendees:</p>
+    <ul>
+        @foreach(var item in EventAttendees){
+            <li>@item.FullName</li>
+        }
+        
+    </ul>
 </div>
 
 @code{
@@ -31,12 +42,14 @@
     public Event SelectedEventObj { get; set; }
     public bool IsRegisteredForEvent { get; set; } = false;
     public RegisteredUser CurrentUser { get; set; }
+    public List<RegisteredUser> EventAttendees { get; set; } = new();
 
     protected override Task OnParametersSetAsync()
     {
         SelectedEventObj = _eventService.GetById(eventId);
         CurrentUser = _currentUserService.GetCurrentUser();
         IsRegisteredForEvent = SelectedEventObj.AttendeeIds.Contains(CurrentUser?.Id ?? -1);
+        EventAttendees =  _userService.GetUserListById(SelectedEventObj.AttendeeIds);
 
         return Task.CompletedTask;
     }
@@ -47,6 +60,7 @@
         {
             _eventService.AddAttendee(eventId, CurrentUser.Id);
             IsRegisteredForEvent = true;
+            EventAttendees =  _userService.GetUserListById(SelectedEventObj.AttendeeIds);
         }
         if (CurrentUser == null)
         {
@@ -60,6 +74,7 @@
         {
             _eventService.RemoveAttendee(eventId, CurrentUser.Id);
             IsRegisteredForEvent = false;
+            EventAttendees =  _userService.GetUserListById(SelectedEventObj.AttendeeIds);
         }
     }
 }

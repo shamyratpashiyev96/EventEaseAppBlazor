@@ -6,6 +6,7 @@ public interface IUserService
 {
     void AddUser(RegisteredUser newUser);
     List<RegisteredUser> GetUserList();
+    List<RegisteredUser> GetUserListById(List<int> idList);
 };
 
 public class UserService : IUserService
@@ -20,5 +21,10 @@ public class UserService : IUserService
     public List<RegisteredUser> GetUserList()
     {
         return RegisteredUsersList;
+    }
+
+    public List<RegisteredUser> GetUserListById(List<int> idList)
+    {
+        return RegisteredUsersList.Where(x => idList.Contains(x.Id)).ToList();
     }
 }
